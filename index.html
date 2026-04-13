@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>SplitEasy</title>
+<link href="https://fonts.googleapis.com/css2?family=Clash+Display:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0e0b1e;
+  --card:#17122e;
+  --card2:#1f1840;
+  --border:#2e2655;
+  --text:#f0ecff;
+  --muted:#7b72aa;
+  --hint:#3d3570;
+  --p1:#c084fc;
+  --p2:#818cf8;
+  --g1:#34d399;
+  --g2:#6ee7b7;
+  --o1:#fb923c;
+  --o2:#fbbf24;
+  --r1:#f87171;
+  --r2:#fca5a5;
+  --pink:#f472b6;
+  --cyan:#22d3ee;
+  --serif:'Clash Display',sans-serif;
+  --sans:'Plus Jakarta Sans',sans-serif;
+}
+
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.5;overflow-x:hidden}
+
+/* ── BG ORBS ── */
+body::before,body::after{
+  content:'';position:fixed;border-radius:50%;pointer-events:none;z-index:0;
+  filter:blur(80px);opacity:0.18;
+}
+body::before{width:600px;height:600px;background:radial-gradient(circle,#7c3aed,transparent);top:-200px;left:-200px}
+body::after{width:500px;height:500px;background:radial-gradient(circle,#0ea5e9,transparent);bottom:-150px;right:-150px}
+
+.app{max-width:980px;margin:0 auto;padding:28px 16px 80px;position:relative;z-index:1}
+
+/* ── HEADER ── */
+.header{text-align:center;padding:40px 0 36px}
+.header h1{font-family:var(--serif);font-size:clamp(2.2rem,6vw,3.6rem);font-weight:700;letter-spacing:-1px;line-height:1}
+.header h1 .word1{color:var(--p1)}
+.header h1 .word2{color:var(--g1)}
+.header p{color:var(--muted);font-size:0.92rem;margin-top:10px;letter-spacing:0.2px}
+.header .pill{display:inline-flex;align-items:center;gap:6px;background:rgba(192,132,252,0.12);border:1px solid rgba(192,132,252,0.3);color:var(--p1);border-radius:20px;padding:4px 14px;font-size:0.75rem;font-weight:600;margin-bottom:14px;letter-spacing:0.5px}
+.dot-live{width:6px;height:6px;border-radius:50%;background:var(--g1);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:3px;background:rgba(255,255,255,0.04);border:1px solid var(--border);padding:4px;border-radius:14px;margin-bottom:24px}
+.tab{flex:1;padding:10px 6px;border:none;border-radius:10px;font-family:var(--sans);font-size:0.82rem;font-weight:600;cursor:pointer;background:transparent;color:var(--muted);transition:all 0.2s;letter-spacing:0.3px}
+.tab.active{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 4px 20px rgba(124,58,237,0.4)}
+.tab-icon{display:block;font-size:18px;margin-bottom:3px}
+
+/* ── CARDS ── */
+.card{background:var(--card);border-radius:20px;border:1px solid var(--border);padding:22px;margin-bottom:16px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;inset:0;border-radius:20px;pointer-events:none;background:linear-gradient(135deg,rgba(255,255,255,0.03),transparent)}
+.card-glow-purple::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.15),transparent);pointer-events:none}
+.card-glow-green::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(52,211,153,0.12),transparent);pointer-events:none}
+.card-glow-orange::after{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;border-radius:50%;background:radial-gradient(circle,rgba(251,146,60,0.12),transparent);pointer-events:none}
+
+.card-title{font-family:var(--serif);font-size:1.1rem;margin-bottom:16px;display:flex;align-items:center;gap:10px;font-weight:600}
+.ctag{font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px;letter-spacing:0.5px}
+.ctag-purple{background:rgba(192,132,252,0.15);color:var(--p1)}
+.ctag-green{background:rgba(52,211,153,0.15);color:var(--g1)}
+.ctag-orange{background:rgba(251,146,60,0.15);color:var(--o1)}
+
+/* ── PEOPLE ── */
+.people-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px;min-height:20px}
+.person-chip{display:flex;align-items:center;gap:7px;background:var(--card2);border:1px solid var(--border);border-radius:24px;padding:5px 10px 5px 5px;font-size:0.82rem;font-weight:600;transition:all 0.2s}
+.person-chip:hover{border-color:var(--p1)}
+.avatar{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.68rem;font-weight:700;flex-shrink:0;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.4)}
+.rm-btn{background:none;border:none;cursor:pointer;color:var(--hint);font-size:17px;line-height:1;padding:0 0 0 3px;transition:color 0.15s}
+.rm-btn:hover{color:var(--r1)}
+
+.add-row{display:flex;gap:8px}
+.inp{width:100%;padding:10px 15px;border:1px solid var(--border);border-radius:12px;font-family:var(--sans);font-size:0.88rem;color:var(--text);background:rgba(255,255,255,0.04);outline:none;transition:border-color 0.2s}
+.inp:focus{border-color:var(--p1);background:rgba(124,58,237,0.06)}
+.inp::placeholder{color:var(--hint)}
+select.inp{cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237b72aa' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-color:rgba(255,255,255,0.04);padding-right:34px}
+select.inp option{background:#1f1840;color:var(--text)}
+
+.btn{padding:10px 20px;border:none;border-radius:12px;font-family:var(--sans);font-size:0.85rem;font-weight:700;cursor:pointer;transition:all 0.15s;white-space:nowrap;letter-spacing:0.3px}
+.btn-primary{background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;box-shadow:0 4px 20px rgba(124,58,237,0.35)}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 6px 28px rgba(124,58,237,0.5)}
+.btn-primary:active{transform:scale(0.97)}
+.btn-full{width:100%;padding:13px;font-size:0.9rem;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;box-shadow:0 6px 24px rgba(124,58,237,0.4)}
+.btn-full:hover{box-shadow:0 8px 32px rgba(124,58,237,0.55);transform:translateY(-1px)}
+.btn-outline{background:rgba(255,255,255,0.04);border:1px solid var(--border);color:var(--muted)}
+.btn-outline:hover{border-color:var(--p1);color:var(--p1)}
+
+/* ── QUICK START ── */
+.quick-grid{display:flex;flex-wrap:wrap;gap:8px}
+.qbtn{padding:8px 16px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,0.03);color:var(--muted);font-size:0.8rem;font-weight:600;cursor:pointer;transition:all 0.2s}
+.qbtn:hover{background:rgba(192,132,252,0.1);border-color:rgba(192,132,252,0.4);color:var(--p1);transform:translateY(-1px)}
+
+/* ── FORM GRID ── */
+.fg{display:grid;gap:12px;margin-bottom:12px}
+.fg-2{grid-template-columns:1fr 1fr}
+.fg-3{grid-template-columns:2fr 1fr 1fr}
+.field label{display:block;font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:6px}
+
+/* ── SPLIT BUTTONS ── */
+.split-btns{display:flex;gap:4px}
+.sbtn{flex:1;padding:8px 4px;border:1px solid var(--border);border-radius:10px;font-size:0.75rem;font-weight:700;cursor:pointer;background:rgba(255,255,255,0.02);color:var(--muted);text-align:center;transition:all 0.2s;letter-spacing:0.3px}
+.sbtn.active{background:linear-gradient(135deg,rgba(52,211,153,0.2),rgba(52,211,153,0.08));border-color:rgba(52,211,153,0.5);color:var(--g1)}
+
+/* ── CUSTOM SPLIT ── */
+.cs-area{display:none;margin-top:14px}
+.cs-area.show{display:block}
+.cs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px}
+.cs-item{display:flex;align-items:center;gap:8px}
+.cs-item .inp{width:80px;padding:7px 10px;text-align:right;font-size:0.85rem}
+
+/* ── EXPENSE LIST ── */
+.exp-item{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid rgba(46,38,85,0.6)}
+.exp-item:last-child{border-bottom:none}
+.exp-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.exp-info{flex:1;min-width:0}
+.exp-name{font-weight:700;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.exp-meta{font-size:0.74rem;color:var(--muted);margin-top:3px}
+.exp-amt{font-family:var(--serif);font-size:1.15rem;text-align:right;flex-shrink:0;font-weight:600;background:linear-gradient(135deg,var(--o1),var(--o2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.exp-del{background:none;border:none;cursor:pointer;color:var(--hint);font-size:18px;padding:5px;border-radius:8px;transition:all 0.15s;flex-shrink:0}
+.exp-del:hover{background:rgba(248,113,113,0.12);color:var(--r1)}
+
+/* ── SETTLE ── */
+.stat-bar{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px}
+.stat-card{border-radius:16px;padding:16px;text-align:center;position:relative;overflow:hidden}
+.stat-card:nth-child(1){background:linear-gradient(135deg,rgba(192,132,252,0.15),rgba(129,140,248,0.08));border:1px solid rgba(192,132,252,0.2)}
+.stat-card:nth-child(2){background:linear-gradient(135deg,rgba(52,211,153,0.15),rgba(110,231,183,0.08));border:1px solid rgba(52,211,153,0.2)}
+.stat-card:nth-child(3){background:linear-gradient(135deg,rgba(251,146,60,0.15),rgba(251,191,36,0.08));border:1px solid rgba(251,146,60,0.2)}
+.stat-label{font-size:0.68rem;font-weight:700;text-transform:uppercase;letter-spacing:0.7px;color:var(--muted);margin-bottom:6px}
+.stat-val{font-family:var(--serif);font-size:1.5rem;font-weight:700}
+.stat-card:nth-child(1) .stat-val{color:var(--p1)}
+.stat-card:nth-child(2) .stat-val{color:var(--g1)}
+.stat-card:nth-child(3) .stat-val{color:var(--o1)}
+
+/* ── BALANCES ── */
+.bal-list{display:flex;flex-direction:column;gap:8px}
+.bal-row{display:flex;align-items:center;gap:10px;padding:11px 14px;border-radius:14px;border:1px solid transparent}
+.bal-row.pos{background:rgba(52,211,153,0.07);border-color:rgba(52,211,153,0.2)}
+.bal-row.neg{background:rgba(248,113,113,0.07);border-color:rgba(248,113,113,0.2)}
+.bal-row.zero{background:rgba(255,255,255,0.03);border-color:var(--border)}
+.bal-name{display:flex;align-items:center;gap:8px;flex:1;font-weight:600;font-size:0.88rem}
+.bal-tag{font-size:0.72rem;margin-left:4px;color:var(--muted);font-weight:400}
+.bal-amt{font-family:var(--serif);font-size:1rem;font-weight:700}
+.bal-row.pos .bal-amt{color:var(--g1)}
+.bal-row.neg .bal-amt{color:var(--r1)}
+
+/* ── SETTLEMENTS ── */
+.settle-list{display:flex;flex-direction:column;gap:8px}
+.settle-item{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--card2);border:1px solid var(--border);border-radius:16px;transition:border-color 0.2s}
+.settle-item:hover{border-color:rgba(192,132,252,0.3)}
+.settle-from,.settle-to{display:flex;align-items:center;gap:7px;font-weight:600;font-size:0.88rem}
+.settle-to{flex:1}
+.arrow-chip{background:rgba(129,140,248,0.15);border:1px solid rgba(129,140,248,0.3);border-radius:8px;padding:3px 10px;font-size:0.8rem;color:var(--p2);flex-shrink:0}
+.settle-amt{font-family:var(--serif);font-size:1.05rem;font-weight:700;background:linear-gradient(135deg,var(--g1),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-left:auto}
+.settle-mark{background:rgba(52,211,153,0.12);border:1px solid rgba(52,211,153,0.3);color:var(--g1);padding:5px 12px;border-radius:9px;font-size:0.73rem;font-weight:700;cursor:pointer;transition:all 0.15s;white-space:nowrap}
+.settle-mark:hover{background:rgba(52,211,153,0.22)}
+
+/* ── EMPTY ── */
+.empty{text-align:center;padding:44px 20px;color:var(--hint)}
+.empty .big{font-size:3.5rem;margin-bottom:12px;filter:grayscale(0.3)}
+.empty p{font-size:0.85rem;line-height:1.7}
+
+/* ── TOAST ── */
+#toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(16px);
+  background:linear-gradient(135deg,#7c3aed,#4f46e5);color:#fff;
+  padding:11px 22px;border-radius:30px;font-size:0.82rem;font-weight:600;
+  opacity:0;transition:all 0.3s;pointer-events:none;white-space:nowrap;z-index:999;
+  box-shadow:0 8px 32px rgba(124,58,237,0.5);
+}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:4px 0}
+
+@media(max-width:640px){
+  .fg-2,.fg-3{grid-template-columns:1fr}
+  .stat-bar{grid-template-columns:repeat(3,1fr)}
+  .stat-val{font-size:1.1rem}
+  .tab{font-size:0.75rem;padding:8px 4px}
+  .tab-icon{font-size:16px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header class="header">
+  <div class="pill"><span class="dot-live"></span>NO LOGIN · WORKS OFFLINE</div>
+  <h1><span class="word1">Split</span><span class="word2">Easy</span></h1>
+  <p>Track shared expenses & settle who owes whom — instantly</p>
+</header>
+
+<div class="tabs" role="tablist">
+  <button class="tab active" data-tab="people" onclick="go('people')"><span class="tab-icon">👥</span>People</button>
+  <button class="tab" data-tab="expenses" onclick="go('expenses')"><span class="tab-icon">🧾</span>Expenses</button>
+  <button class="tab" data-tab="settle" onclick="go('settle')"><span class="tab-icon">⚖️</span>Settle Up</button>
+</div>
+
+<!-- PEOPLE -->
+<div id="tab-people">
+  <div class="card card-glow-purple">
+    <div class="card-title">Add People <span class="ctag ctag-purple">GROUP</span></div>
+    <div class="people-list" id="people-list"><span style="color:var(--hint);font-size:0.85rem">No one added yet</span></div>
+    <div class="add-row">
+      <input class="inp" id="pi" type="text" placeholder="Enter name…" maxlength="24" autocomplete="off"/>
+      <button class="btn btn-primary" onclick="addPerson()">Add</button>
+    </div>
+    <p style="margin-top:10px;font-size:0.76rem;color:var(--hint)">Add at least 2 people, then go to Expenses</p>
+  </div>
+
+  <div class="card card-glow-orange">
+    <div class="card-title">Quick Start <span class="ctag ctag-orange">PRESETS</span></div>
+    <div class="quick-grid">
+      <button class="qbtn" onclick="qs(['Rahul','Priya','Arjun','Sneha'])">🏠 Roommates</button>
+      <button class="qbtn" onclick="qs(['You','Raj','Ananya','Karan'])">✈️ Trip Gang</button>
+      <button class="qbtn" onclick="qs(['Me','Partner'])">💑 Couple</button>
+      <button class="qbtn" onclick="qs(['Alice','Bob','Charlie','Diana','Evan'])">🎉 Party</button>
+    </div>
+  </div>
+</div>
+
+<!-- EXPENSES -->
+<div id="tab-expenses" style="display:none">
+  <div class="card card-glow-purple">
+    <div class="card-title">New Expense <span class="ctag ctag-purple">ADD</span></div>
+    <div class="fg fg-3">
+      <div class="field"><label>Description</label><input class="inp" id="edesc" type="text" placeholder="e.g. Pizza night" maxlength="40" autocomplete="off"/></div>
+      <div class="field"><label>Amount (₹)</label><input class="inp" id="eamt" type="number" placeholder="0" min="0" step="0.01"/></div>
+      <div class="field"><label>Category</label>
+        <select class="inp" id="ecat">
+          <option value="🍽️">🍽️ Food</option>
+          <option value="🏠">🏠 Rent</option>
+          <option value="✈️">✈️ Travel</option>
+          <option value="🛒">🛒 Groceries</option>
+          <option value="🎬">🎬 Fun</option>
+          <option value="💊">💊 Health</option>
+          <option value="⚡">⚡ Utilities</option>
+          <option value="📦">📦 Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg fg-2">
+      <div class="field"><label>Paid by</label><select class="inp" id="epaid"></select></div>
+      <div class="field"><label>Split mode</label>
+        <div class="split-btns">
+          <button class="sbtn active" data-m="equal" onclick="sm('equal')">Equal</button>
+          <button class="sbtn" data-m="percent" onclick="sm('percent')">%</button>
+          <button class="sbtn" data-m="custom" onclick="sm('custom')">Custom</button>
+        </div>
+      </div>
+    </div>
+    <div class="cs-area" id="csa">
+      <label style="font-size:0.72rem;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;display:block;margin-bottom:8px" id="csa-label">Enter amounts (₹)</label>
+      <div class="cs-grid" id="csg"></div>
+      <p id="csr" style="font-size:0.78rem;color:var(--muted);margin-top:8px"></p>
+    </div>
+    <div class="divider" style="margin:14px 0"></div>
+    <button class="btn btn-full" onclick="addExpense()">✦ Add Expense</button>
+  </div>
+
+  <div class="card">
+    <div class="card-title">All Expenses <span class="ctag ctag-green" id="ec"></span></div>
+    <div id="elist"></div>
+  </div>
+</div>
+
+<!-- SETTLE -->
+<div id="tab-settle" style="display:none">
+  <div class="stat-bar">
+    <div class="stat-card"><div class="stat-label">Total Spent</div><div class="stat-val" id="st">₹0</div></div>
+    <div class="stat-card"><div class="stat-label">Per Person</div><div class="stat-val" id="sp">₹0</div></div>
+    <div class="stat-card"><div class="stat-label">Payments</div><div class="stat-val" id="spn">0</div></div>
+  </div>
+
+  <div class="card card-glow-green">
+    <div class="card-title">Balances <span class="ctag ctag-green">WHO OWES</span></div>
+    <div class="bal-list" id="bals"></div>
+  </div>
+
+  <div class="card card-glow-orange">
+    <div class="card-title">Settle Up <span class="ctag ctag-orange">MIN PAYMENTS</span></div>
+    <div class="settle-list" id="settles"></div>
+  </div>
+</div>
+
+</div>
+<div id="toast"></div>
+
+<script>
+let people=[],expenses=[],smode='equal';
+const AVCOLORS=['#7c3aed','#db2777','#0ea5e9','#d97706','#059669','#dc2626','#7c3aed','#0891b2'];
+const f=n=>'₹'+Number(n).toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2});
+const ini=n=>n.trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+const gc=i=>AVCOLORS[i%AVCOLORS.length];
+
+function go(t){
+  ['people','expenses','settle'].forEach(x=>{
+    document.getElementById('tab-'+x).style.display=x===t?'block':'none';
+    document.querySelector('[data-tab="'+x+'"]').classList.toggle('active',x===t);
+  });
+  if(t==='expenses')rxui();
+  if(t==='settle')rsettle();
+}
+
+function addPerson(){
+  const el=document.getElementById('pi'),n=el.value.trim();
+  if(!n){toast('Enter a name');return}
+  if(people.includes(n)){toast('Already added');return}
+  if(people.length>=10){toast('Max 10 people');return}
+  people.push(n);el.value='';rpeople();toast('✦ '+n+' added!');
+}
+function removePerson(n){
+  if(expenses.some(e=>e.paidBy===n||e.splits[n]!=null)){toast('Has expenses — cannot remove');return}
+  people=people.filter(p=>p!==n);rpeople();
+}
+function rpeople(){
+  const el=document.getElementById('people-list');
+  el.innerHTML=people.length?people.map((p,i)=>`
+    <div class="person-chip">
+      <div class="avatar" style="background:${gc(i)}">${ini(p)}</div>
+      ${p}
+      <button class="rm-btn" onclick="removePerson('${p}')">×</button>
+    </div>`).join(''):'<span style="color:var(--hint);font-size:0.85rem">No one added yet</span>';
+}
+function qs(names){people=[...names];rpeople();toast('Group ready — '+names.length+' people')}
+document.getElementById('pi').addEventListener('keydown',e=>{if(e.key==='Enter')addPerson()});
+
+function rxui(){
+  const pb=document.getElementById('epaid');
+  pb.innerHTML=people.length?people.map(p=>`<option>${p}</option>`):'<option disabled>Add people first</option>';
+  bcsg();relist();
+}
+function sm(m){
+  smode=m;
+  document.querySelectorAll('.sbtn').forEach(b=>b.classList.toggle('active',b.dataset.m===m));
+  const a=document.getElementById('csa');
+  a.classList.toggle('show',m!=='equal');
+  document.getElementById('csa-label').textContent=m==='percent'?'Enter percentages (must total 100%)':'Enter amounts (₹)';
+  bcsg();
+}
+function bcsg(){
+  document.getElementById('csg').innerHTML=people.map((p,i)=>`
+    <div class="cs-item">
+      <div class="avatar" style="background:${gc(i)};width:26px;height:26px;font-size:0.65rem">${ini(p)}</div>
+      <span style="font-size:0.82rem;font-weight:600;flex:1;color:var(--text)">${p}</span>
+      <input class="inp cs-inp" type="number" min="0" step="${smode==='percent'?'1':'0.01'}" id="cs${i}" placeholder="${smode==='percent'?'%':'₹'}" oninput="urem()"/>
+    </div>`).join('');
+}
+function urem(){
+  const amt=parseFloat(document.getElementById('eamt').value)||0;
+  const vals=people.map((_,i)=>parseFloat(document.getElementById('cs'+i)?.value||0)||0);
+  const tot=vals.reduce((a,b)=>a+b,0);
+  const r=document.getElementById('csr');
+  if(smode==='percent'){
+    const d=100-tot;
+    r.textContent=d===0?'✓ Totals 100%':Math.abs(d).toFixed(1)+'% '+(d>0?'remaining':'over budget');
+    r.style.color=d===0?'var(--g1)':d<0?'var(--r1)':'var(--muted)';
+  } else {
+    const d=amt-tot;
+    r.textContent=d===0?'✓ Fully allocated':f(Math.abs(d))+' '+(d>0?'remaining':'over budget');
+    r.style.color=d===0?'var(--g1)':d<0?'var(--r1)':'var(--muted)';
+  }
+}
+function addExpense(){
+  if(people.length<2){toast('Add at least 2 people');return}
+  const desc=document.getElementById('edesc').value.trim();
+  const amt=parseFloat(document.getElementById('eamt').value);
+  const cat=document.getElementById('ecat').value;
+  const paidBy=document.getElementById('epaid').value;
+  if(!desc){toast('Add a description');return}
+  if(!amt||amt<=0){toast('Enter a valid amount');return}
+  let splits={};
+  if(smode==='equal'){
+    const sh=amt/people.length;
+    people.forEach(p=>{splits[p]=sh});
+  } else if(smode==='percent'){
+    const vals=people.map((_,i)=>parseFloat(document.getElementById('cs'+i)?.value||0)||0);
+    if(Math.abs(vals.reduce((a,b)=>a+b,0)-100)>0.01){toast('Percentages must total 100%');return}
+    people.forEach((p,i)=>{splits[p]=amt*vals[i]/100});
+  } else {
+    const vals=people.map((_,i)=>parseFloat(document.getElementById('cs'+i)?.value||0)||0);
+    if(Math.abs(vals.reduce((a,b)=>a+b,0)-amt)>0.01){toast('Amounts must total '+f(amt));return}
+    people.forEach((p,i)=>{splits[p]=vals[i]});
+  }
+  expenses.push({id:Date.now(),desc,amt,cat,paidBy,splits,date:new Date().toLocaleDateString('en-IN')});
+  document.getElementById('edesc').value='';
+  document.getElementById('eamt').value='';
+  people.forEach((_,i)=>{const e=document.getElementById('cs'+i);if(e)e.value=''});
+  document.getElementById('csr').textContent='';
+  relist();toast('✦ "'+desc+'" added!');
+}
+function delExp(id){expenses=expenses.filter(e=>e.id!==id);relist();toast('Removed')}
+function relist(){
+  const el=document.getElementById('elist');
+  const ec=document.getElementById('ec');
+  ec.textContent=expenses.length?expenses.length+' expense'+(expenses.length>1?'s':''):'';
+  if(!expenses.length){
+    el.innerHTML='<div class="empty"><div class="big">🧾</div><p>No expenses yet.<br>Add your first one above!</p></div>';return;
+  }
+  el.innerHTML=[...expenses].reverse().map(e=>`
+    <div class="exp-item">
+      <div class="exp-ico" style="background:rgba(251,146,60,0.12)">${e.cat}</div>
+      <div class="exp-info">
+        <div class="exp-name">${e.desc}</div>
+        <div class="exp-meta">Paid by <b style="color:var(--p1)">${e.paidBy}</b> · ${e.date}</div>
+      </div>
+      <div class="exp-amt">${f(e.amt)}</div>
+      <button class="exp-del" onclick="delExp(${e.id})">🗑</button>
+    </div>`).join('');
+}
+
+function rsettle(){
+  if(!expenses.length){
+    document.getElementById('bals').innerHTML='<div class="empty"><div class="big">⚖️</div><p>No expenses yet.</p></div>';
+    document.getElementById('settles').innerHTML='';
+    ['st','sp','spn'].forEach(id=>document.getElementById(id).textContent='₹0');
+    document.getElementById('spn').textContent='0';return;
+  }
+  const paid={},owed={};
+  people.forEach(p=>{paid[p]=0;owed[p]=0});
+  expenses.forEach(e=>{
+    paid[e.paidBy]=(paid[e.paidBy]||0)+e.amt;
+    Object.entries(e.splits).forEach(([p,v])=>{owed[p]=(owed[p]||0)+v});
+  });
+  const bal={};people.forEach(p=>{bal[p]=(paid[p]||0)-(owed[p]||0)});
+  const total=expenses.reduce((a,e)=>a+e.amt,0);
+  document.getElementById('st').textContent=f(total);
+  document.getElementById('sp').textContent=f(total/Math.max(people.length,1));
+
+  document.getElementById('bals').innerHTML=people.map((p,i)=>{
+    const b=bal[p]||0;
+    const cls=b>0.005?'pos':b<-0.005?'neg':'zero';
+    const lbl=b>0.005?'gets back':b<-0.005?'owes':'settled';
+    return `<div class="bal-row ${cls}">
+      <div class="bal-name"><div class="avatar" style="background:${gc(i)}">${ini(p)}</div>${p}<span class="bal-tag">${lbl}</span></div>
+      <div class="bal-amt">${Math.abs(b)<0.005?'—':(b>0?'+':'-')+f(Math.abs(b))}</div>
+    </div>`;
+  }).join('');
+
+  const b2={...bal},txns=[];
+  for(let k=0;k<50;k++){
+    const debtors=Object.entries(b2).filter(([,v])=>v<-0.005).sort((a,b)=>a[1]-b[1]);
+    const creds=Object.entries(b2).filter(([,v])=>v>0.005).sort((a,b)=>b[1]-a[1]);
+    if(!debtors.length||!creds.length)break;
+    const [d,da]=debtors[0],[c,ca]=creds[0];
+    const pay=Math.min(-da,ca);
+    txns.push({from:d,to:c,amount:pay});
+    b2[d]+=pay;b2[c]-=pay;
+  }
+  document.getElementById('spn').textContent=txns.length;
+
+  const sd=document.getElementById('settles');
+  if(!txns.length){
+    sd.innerHTML='<div class="empty"><div class="big">🎉</div><p>Everyone is settled up!</p></div>';return;
+  }
+  sd.innerHTML=txns.map((t,i)=>{
+    const fi=people.indexOf(t.from),ti=people.indexOf(t.to);
+    return `<div class="settle-item" id="si${i}">
+      <div class="settle-from"><div class="avatar" style="background:${gc(fi)}">${ini(t.from)}</div>${t.from}</div>
+      <div class="arrow-chip">→</div>
+      <div class="settle-to"><div class="avatar" style="background:${gc(ti)}">${ini(t.to)}</div>${t.to}</div>
+      <div class="settle-amt">${f(t.amount)}</div>
+      <button class="settle-mark" onclick="markPaid(${i},'${t.from}','${t.to}',${t.amount.toFixed(2)})">✓ Mark paid</button>
+    </div>`;
+  }).join('');
+}
+function markPaid(i,from,to,amt){
+  const splits={};people.forEach(p=>{splits[p]=0});splits[from]=amt;
+  expenses.push({id:Date.now(),desc:from+' → '+to,amt,cat:'💸',paidBy:from,splits,date:new Date().toLocaleDateString('en-IN')});
+  rsettle();toast('✓ Payment recorded!');
+}
+
+let tt;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(tt);tt=setTimeout(()=>el.classList.remove('show'),2500);
+}
+rpeople();
+</script>
+</body>
+</html>
